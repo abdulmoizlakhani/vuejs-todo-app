@@ -7,9 +7,7 @@ const generateFormattedResponseData = (
 };
 
 const throwAPIResponse = (res, data, statusCode, message) => {
-  return res
-    .status(statusCode)
-    .json(generateFormattedResponseData(data, statusCode, message));
+  res.status(statusCode).json(generateFormattedResponseData(data, statusCode, message));
 };
 
 const isBoolean = (val) => "boolean" === typeof val;
