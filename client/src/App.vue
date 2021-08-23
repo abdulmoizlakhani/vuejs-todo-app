@@ -1,68 +1,63 @@
 <template>
   <div>
-    <h2 class="main-heading">Todo List App</h2>
-    <AddTodo @addTodo="addTodo"></AddTodo>
-    <TodoList
-      :todoList="todoList"
-      @deleteTodo="deleteTodo"
-      @editTodo="editTodo"
-      @markAsDone="markAsDone"
-    ></TodoList>
+    <Auth
+      v-if="!authenticated"
+      :showSignUp="showSignUp"
+      @updateShowSignUp="updateShowSignUp"
+      @signUp="signUp"
+      @signIn="signIn"
+    />
+    <Todo v-else :userFullName="user.userFullName" @signOut="signOut" />
   </div>
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
-
-// components
-import AddTodo from "./components/AddTodo.vue";
-import TodoList from "./components/TodoList.vue";
+// containers
+import Auth from "./containers/Auth.vue";
+import Todo from "./containers/Todo.vue";
 
 export default {
   name: "App",
   components: {
-    AddTodo,
-    TodoList,
+    Auth,
+    Todo,
   },
   data() {
     return {
-      todoList: [],
+      authenticated: false,
+      user: null,
+      showSignUp: true,
     };
   },
   methods: {
-    addTodo(text) {
-      const newTodo = { id: uuidv4(), text, editMode: false, done: false };
-      this.todoList.push(newTodo);
+    toggleUserAuthentication(status) {
+      this.authenticated = status;
     },
-    markAsDone(todoId, status) {
-      const updatedTodoList = this.todoList.map((todo) => {
-        if (todo.id === todoId) {
-          return { ...todo, done: status };
+    updateShowSignUp(status) {
+      this.showSignUp = status;
+    },
+    signUp(data) {
+      if (data) {
+        this.user = data;
+        this.showSignUp = false;
+      }
+    },
+    signIn(data) {
+      if (!this.user) {
+        alert("User not found!");
+      } else {
+        const { userEmail, userPass } = data;
+        const { userEmail: uEmail, userPass: uPass } = this.user;
+        if (userEmail === uEmail && userPass === uPass) {
+          this.authenticated = true;
         } else {
-          return todo;
+          alert("Invalid Credentials");
         }
-      });
-      this.todoList = updatedTodoList;
+      }
     },
-    editTodo(todoId, status, value) {
-      const updatedTodoList = this.todoList.map((todo) => {
-        if (todo.id === todoId) {
-          const updatedTodo = { ...todo, editMode: status };
-          if (value) {
-            updatedTodo.text = value;
-          }
-          return updatedTodo;
-        } else {
-          return todo;
-        }
-      });
-      this.todoList = updatedTodoList;
-    },
-    deleteTodo(todoId) {
-      const updatedTodoList = this.todoList.filter(
-        (todo) => todo.id !== todoId
-      );
-      this.todoList = updatedTodoList;
+    signOut() {
+      this.authenticated = false;
+      this.user = null;
     },
   },
 };
