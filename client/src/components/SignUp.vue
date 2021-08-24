@@ -57,7 +57,7 @@ export default {
         userEmail: "",
         userPass: "",
         userConfirmPass: "",
-        todos: [],
+        todoList: [],
       },
     };
   },
