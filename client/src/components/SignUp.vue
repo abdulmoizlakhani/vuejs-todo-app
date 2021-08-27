@@ -81,7 +81,7 @@ export default {
       if (userPass !== userConfirmPass) {
         alert("Password mismatched! Both passwords must be same");
       } else {
-        this.$parent.$emit("signUp", this.formData);
+        this.$parent.$parent.$emit("signUp", this.formData);
       }
     },
   },

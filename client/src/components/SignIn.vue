@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     signIn() {
-      this.$parent.$emit("signIn", this.formData);
+      this.$parent.$parent.$emit("signIn", this.formData);
     },
     getTrimmedText(text) {
       return !text.trim();

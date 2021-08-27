@@ -25,7 +25,12 @@ export default {
     AddTodo,
     TodoList,
   },
-  props: ["userFullName", "todoList"],
+  props: ["userFullName", "todoList", "isAuthenticated"],
   emits: ["signOut", "addTodo", "markAsDone", "editTodo", "deleteTodo"],
+  beforeMount() {
+    if (!this.isAuthenticated) {
+      this.$router.push("/sign-in");
+    }
+  },
 };
 </script>

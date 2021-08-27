@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     markAsDone(id, status) {
-      this.$parent.$emit("markAsDone", id, status);
+      this.$parent.$parent.$emit("markAsDone", id, status);
     },
     editTodo(todo, status, value) {
       if (status) {
@@ -56,10 +56,10 @@ export default {
       } else {
         delete this.todosToEdit[todo.id];
       }
-      this.$parent.$emit("editTodo", todo.id, status, value);
+      this.$parent.$parent.$emit("editTodo", todo.id, status, value);
     },
     deleteTodo(id) {
-      this.$parent.$emit("deleteTodo", id);
+      this.$parent.$parent.$emit("deleteTodo", id);
     },
     saveTodo(todo) {
       this.editTodo(todo, false, this.todosToEdit[todo.id]);

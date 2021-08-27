@@ -1,54 +1,37 @@
 <template>
   <div>
-    <Auth
-      v-if="!authenticated"
-      :showSignUp="showSignUp"
-      @updateShowSignUp="updateShowSignUp"
+    <router-view
+      :isAuthenticated="isAuthenticated"
+      :userFullName="user?.userFullName"
+      :todoList="user?.todoList || []"
       @signUp="signUp"
       @signIn="signIn"
-    />
-    <Todo
-      v-else
-      :userFullName="user.userFullName"
-      :todoList="user.todoList || []"
       @signOut="signOut"
       @addTodo="addTodo"
       @markAsDone="markAsDone"
       @editTodo="editTodo"
       @deleteTodo="deleteTodo"
-    />
+    ></router-view>
   </div>
 </template>
 
 <script>
 import { v4 as uuidv4 } from "uuid";
 
-// containers
-import Auth from "./containers/Auth.vue";
-import Todo from "./containers/Todo.vue";
-
 export default {
   name: "App",
-  components: {
-    Auth,
-    Todo,
-  },
   data() {
     return {
-      authenticated: false,
+      isAuthenticated: false,
       user: null,
-      showSignUp: true,
     };
   },
   methods: {
     // Auth Methods
-    updateShowSignUp(status) {
-      this.showSignUp = status;
-    },
     signUp(data) {
       if (data) {
         this.user = data;
-        this.showSignUp = false;
+        this.$router.push("/sign-in");
       }
     },
     signIn(data) {
@@ -58,15 +41,17 @@ export default {
         const { userEmail, userPass } = data;
         const { userEmail: uEmail, userPass: uPass } = this.user;
         if (userEmail === uEmail && userPass === uPass) {
-          this.authenticated = true;
+          this.isAuthenticated = true;
+          this.$router.push("/todo");
         } else {
           alert("Invalid Credentials");
         }
       }
     },
     signOut() {
-      this.authenticated = false;
+      this.isAuthenticated = false;
       this.user = null;
+      this.$router.push("/");
     },
 
     // Todo Methods
